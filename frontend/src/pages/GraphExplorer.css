@@ -1,0 +1,98 @@
+.graph-page {
+  height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+}
+
+.graph-page h1 {
+  margin-bottom: 20px;
+}
+
+.graph-container {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px
+    rgba(0, 0, 0, 0.08);
+}
+
+.graph-loading {
+  height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.graph-loader {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  border: 5px solid #e5e7eb;
+  border-top: 5px solid #6366f1;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.react-flow__node {
+  background: linear-gradient(
+    135deg,
+    #9333ea,
+    #7c3aed
+  );
+
+  color: white;
+
+  border-radius: 16px;
+
+  border: none;
+
+  font-weight: 700;
+
+  font-size: 16px;
+
+  width: 220px !important;
+  height: 70px !important;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  white-space: nowrap;
+
+  overflow: visible;
+
+  padding: 0 20px;
+
+  box-shadow: 0 8px 25px
+    rgba(124, 58, 237, 0.4);
+}
+
+.react-flow__edge-path {
+  stroke: #8b5cf6;
+  stroke-width: 2.5;
+  stroke-dasharray: 6 6;
+}
+
+.react-flow__controls {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.react-flow__minimap {
+  border-radius: 12px;
+  overflow: hidden;
+}
