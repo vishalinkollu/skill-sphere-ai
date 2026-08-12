@@ -2,7 +2,6 @@ import {
   FaHome,
   FaUsers,
   FaProjectDiagram,
-  FaLightbulb,
 } from "react-icons/fa";
 
 import { Link } from "react-router-dom";

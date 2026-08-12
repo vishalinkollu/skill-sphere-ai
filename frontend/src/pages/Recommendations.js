@@ -24,12 +24,13 @@ import "./Recommendations.css";
 
 const Recommendations = () => {
   const { id } = useParams();
-
-  const navigate =
-    useNavigate();
+  const navigate = useNavigate();
 
   const [loading, setLoading] =
     useState(true);
+
+  const [error, setError] =
+    useState("");
 
   const [connections, setConnections] =
     useState([]);
@@ -41,50 +42,60 @@ const Recommendations = () => {
     useState([]);
 
   useEffect(() => {
-    fetchRecommendations();
-  }, [id]);
+    let isMounted = true;
 
-  const fetchRecommendations =
-    async () => {
-      try {
-        setLoading(true);
+    const loadRecommendations =
+      async () => {
+        try {
+          setLoading(true);
+          setError("");
 
-        const [
-          connectionRes,
-          skillRes,
-          companyRes,
-        ] =
-          await Promise.all([
-            getConnectionRecommendations(
-              id
-            ),
-            getSkillRecommendations(
-              id
-            ),
-            getCompanyRecommendations(
-              id
-            ),
+          const [
+            connectionRes,
+            skillRes,
+            companyRes,
+          ] = await Promise.all([
+            getConnectionRecommendations(id),
+            getSkillRecommendations(id),
+            getCompanyRecommendations(id),
           ]);
 
-        setConnections(
-          connectionRes.data.data ||
-            []
-        );
+          if (!isMounted) {
+            return;
+          }
 
-        setSkills(
-          skillRes.data.data || []
-        );
+          setConnections(
+            connectionRes.data.data || []
+          );
 
-        setCompanies(
-          companyRes.data.data ||
-            []
-        );
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
+          setSkills(
+            skillRes.data.data || []
+          );
+
+          setCompanies(
+            companyRes.data.data || []
+          );
+        } catch (err) {
+          console.error(err);
+
+          if (isMounted) {
+            setError(
+              "Failed to load recommendations."
+            );
+          }
+        } finally {
+          if (isMounted) {
+            setLoading(false);
+          }
+        }
+      };
+
+    loadRecommendations();
+
+    return () => {
+      isMounted = false;
     };
+  }, [id]);
 
   if (loading) {
     return (
@@ -94,6 +105,19 @@ const Recommendations = () => {
           <h2>
             Loading Recommendations...
           </h2>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <MainLayout>
+        <div className="error-state">
+          <h2>
+            Something went wrong
+          </h2>
+          <p>{error}</p>
         </div>
       </MainLayout>
     );
@@ -110,26 +134,21 @@ const Recommendations = () => {
         }}
       >
         <button
-          onClick={() =>
-            navigate(-1)
-          }
+          onClick={() => navigate(-1)}
           style={{
             width: "40px",
             height: "40px",
             borderRadius: "50%",
             border: "none",
             cursor: "pointer",
-            background:
-              "#6366f1",
+            background: "#6366f1",
             color: "white",
           }}
         >
           <FaArrowLeft />
         </button>
 
-        <h1>
-          Recommendations
-        </h1>
+        <h1>Recommendations</h1>
       </div>
 
       <div className="recommendation-page">
@@ -139,35 +158,25 @@ const Recommendations = () => {
           </h2>
 
           <div className="recommendation-grid">
-            {connections.length >
-            0 ? (
-              connections.map(
-                (user) => (
-                  <div
-                    key={user.id}
-                    className="recommendation-card"
-                  >
-                    <div className="avatar">
-                      {
-                        user.name?.[0]
-                      }
-                    </div>
-
-                    <h3>
-                      {user.name}
-                    </h3>
-
-                    <p>
-                      {user.email}
-                    </p>
+            {connections.length > 0 ? (
+              connections.map((user) => (
+                <div
+                  key={user.id}
+                  className="recommendation-card"
+                >
+                  <div className="avatar">
+                    {user.name?.[0]}
                   </div>
-                )
-              )
+
+                  <h3>{user.name}</h3>
+                  <p>{user.email}</p>
+                </div>
+              ))
             ) : (
-              <p>
-                No recommendations
-                found
-              </p>
+              <div className="empty-card">
+                No connection
+                recommendations found.
+              </div>
             )}
           </div>
         </section>
@@ -178,24 +187,20 @@ const Recommendations = () => {
           </h2>
 
           <div className="recommendation-grid">
-            {skills.length >
-            0 ? (
-              skills.map(
-                (skill) => (
-                  <div
-                    key={skill.id}
-                    className="recommendation-card"
-                  >
-                    <h3>
-                      {skill.name}
-                    </h3>
-                  </div>
-                )
-              )
+            {skills.length > 0 ? (
+              skills.map((skill) => (
+                <div
+                  key={skill.id}
+                  className="recommendation-card"
+                >
+                  <h3>{skill.name}</h3>
+                </div>
+              ))
             ) : (
-              <p>
-                No skills found
-              </p>
+              <div className="empty-card">
+                No skill recommendations
+                found.
+              </div>
             )}
           </div>
         </section>
@@ -206,37 +211,21 @@ const Recommendations = () => {
           </h2>
 
           <div className="recommendation-grid">
-            {companies.length >
-            0 ? (
-              companies.map(
-                (
-                  company
-                ) => (
-                  <div
-                    key={
-                      company.id
-                    }
-                    className="recommendation-card"
-                  >
-                    <h3>
-                      {
-                        company.name
-                      }
-                    </h3>
-
-                    <p>
-                      {
-                        company.industry
-                      }
-                    </p>
-                  </div>
-                )
-              )
+            {companies.length > 0 ? (
+              companies.map((company) => (
+                <div
+                  key={company.id}
+                  className="recommendation-card"
+                >
+                  <h3>{company.name}</h3>
+                  <p>{company.industry}</p>
+                </div>
+              ))
             ) : (
-              <p>
-                No companies
-                found
-              </p>
+              <div className="empty-card">
+                No matching companies
+                found.
+              </div>
             )}
           </div>
         </section>
