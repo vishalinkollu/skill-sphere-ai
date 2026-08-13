@@ -4,28 +4,49 @@ import {
   FaProjectDiagram,
 } from "react-icons/fa";
 
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import "./Sidebar.css";
 
 const Sidebar = () => {
   return (
     <aside className="sidebar">
-      <Link to="/">
+      <NavLink
+        to="/"
+        end
+        className={({ isActive }) =>
+          isActive
+            ? "sidebar-link active"
+            : "sidebar-link"
+        }
+      >
         <FaHome />
-        Dashboard
-      </Link>
+        <span>Dashboard</span>
+      </NavLink>
 
-      <Link to="/users">
+      <NavLink
+        to="/users"
+        className={({ isActive }) =>
+          isActive
+            ? "sidebar-link active"
+            : "sidebar-link"
+        }
+      >
         <FaUsers />
-        Users
-      </Link>
+        <span>Users</span>
+      </NavLink>
 
-
-      <Link to="/graph">
+      <NavLink
+        to="/graph"
+        className={({ isActive }) =>
+          isActive
+            ? "sidebar-link active"
+            : "sidebar-link"
+        }
+      >
         <FaProjectDiagram />
-        Graph
-      </Link>
+        <span>Graph</span>
+      </NavLink>
     </aside>
   );
 };
